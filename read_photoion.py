@@ -1,9 +1,9 @@
 import numpy as np
 
-def read_photoion(debug=0):
-  LineDataDir     = '/home/CEFCA/aaorsi/work/HIImodels/Lines/'
-  LineData_file   = LineDataDir + 'LineData_Levesque10dens_1e1'
-  LineInfo_file   = LineDataDir + 'LineInfo_Levesque10'
+def read_photoion(debug=0,MappingsModel='Levesque10'):
+  LineDataDir     = 'HIImodels/Lines/'
+  LineData_file   = LineDataDir + 'LineData_'+MappingsModel+'dens_1e1'
+  LineInfo_file   = LineDataDir + 'LineInfo_'+MappingsModel
   l_info = np.genfromtxt(LineInfo_file,dtype=[('id','i8'),('Linename','S10'),('lambda0','f8')],skip_header=2)
   print 'Lines available:',l_info['Linename']
 
