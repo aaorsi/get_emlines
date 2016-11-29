@@ -11,7 +11,7 @@ def qZrelation(Zgas, q0 = 2.8e7, g0 = -1.3):
   return q0 * (Zgas/0.012)**g0
 
 
-def get_emlines(sfr, metal, LineProps):
+def get_lumlines(sfr, metal, LineProps):
   """
   LineProps contains Linesinfo, LinesArr, q(z) relation, line name and flux limit
   GalArr is the galaxy data dict.
@@ -20,7 +20,7 @@ def get_emlines(sfr, metal, LineProps):
 
   linename = LineProps['linename']
 
-  ngals = len(sfr)
+  ngals = len(sfr) if hasattr(sfr,"__len__") else 1
   qgals = qZrelation(metal, LineProps['q0'],LineProps['g0'])
 
   Nlyc = np.log10(1.35) + np.log10(sfr) + 53.0
@@ -29,19 +29,22 @@ def get_emlines(sfr, metal, LineProps):
   lum_line = np.zeros(ngals)
   for i in range(ngals):
     lum_line[i] = integ_line(linesinfo,linesarr,qgals[i],metal[i],
-             Nlyc[i],lname=linename)
+             Nlyc[i],lname=linename) if hasattr(qgals,"__len__") else integ_line(
+             linesinfo,linesarr,qgals,metal,
+             Nlyc,lname=linename)  
 
   return lum_line           
 
 
 
-def read_eaglelines(linename,sfr,metals,q0=2.8e7,g0=-1.3):
+def get_emlines(linename,sfr,metals,q0=2.8e7,g0=-1.3):
 
 
-  ngal = len(sfr)
+  ngal = len(sfr) if hasattr(sfr, "__len__") else 1
+
   LineProps = {'q0':float(q0), 'g0':float(g0),'linename':linename}
   print 'computing line luminosities...'
-  ll = get_emlines(sfr,metals,LineProps)
+  ll = get_lumlines(sfr,metals,LineProps)
   lumline = np.asarray(ll)
 
   return lumline

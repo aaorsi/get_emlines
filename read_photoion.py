@@ -1,4 +1,5 @@
 import numpy as np
+import sys
 
 def read_photoion(debug=0,MappingsModel='Levesque10'):
   LineDataDir     = 'HIImodels/Lines/'
@@ -64,9 +65,10 @@ def calc_emlines(Linesinfo,LinesArr,qgas,zgas,lname='Halpha',all_lines=False):
     idl = np.where(Linesinfo['Linename'] == lname)
     idl = idl[0]
 
-  if idl == []:
+  if len(idl) == 0:
     print 'calc_emlines: line name ',lname,' not found/recognised'
-    exit()
+    print 'possible linenames are: ',Linesinfo['Linename']
+    sys.exit()
 
   i = 0
 
@@ -171,11 +173,9 @@ def integ_line(lineinfo,LinesArr,qgas,zgas,nlyc,lname='Halpha',all_lines=False):
 
   if np.isnan(line):
     print 'line is nan!'
-    import pdb ; pdb.set_trace()
- 
+    line = -999 
 
 #  if line[0] == line[1]:
-
   return line
 
 
