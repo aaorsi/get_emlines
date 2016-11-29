@@ -6,7 +6,10 @@ This code computes line luminosities *log(L [erg s-1])* based on an input *SFR [
 ```
 from get_emlines import *
 line = 'Halpha'
+sfr  = 0.1 # Msun/yr
+Z    = 0.01
 log_lum = get_emlines(line,sfr,Z)
+
 ```
 You can access the list of lines available in, e.g.: 
 `HIImodels/Lines/LineInfo_Levesque10`
