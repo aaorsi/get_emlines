@@ -3,7 +3,7 @@
 This code computes line luminosities *log(L [erg s-1])* based on an input *SFR [M_sun/yr]* and metallicity *Z*. Details on the physics and the implementation behind this can be found in [Orsi et al. 2014](http://adsabs.harvard.edu/abs/2014MNRAS.443..799O)
 
 **Example of usage:**
-```
+```python
 from get_emlines import *
 line = 'Halpha'
 sfr  = 0.1 # Msun/yr
@@ -14,7 +14,7 @@ log_lum = get_emlines(line,sfr,Z)
 
 Alternatively, you can retrieve all lines by adding the kwarg `all_lines=True` (default is `False`):
 in the example above:
-```
+```python
 log_lum = get_emlines(line,sfr,Z,all_lines=True)
 ```
 in this case `line` is not taken into account, but still needs to be passed along.
