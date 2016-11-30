@@ -11,6 +11,15 @@ Z    = 0.01
 log_lum = get_emlines(line,sfr,Z)
 
 ```
+
+Alternatively, you can retrieve all lines by adding the kwarg `all_lines=True` (default is `False`):
+in the example above:
+```
+log_lum = get_emlines(line,sfr,Z,all_lines=True)
+```
+in this case `line` is not taken into account, but still needs to be passed along.
+
+
 You can access the list of lines available in, e.g.: 
 `HIImodels/Lines/LineInfo_Levesque10`
 By default, the list of lines available (and their names) are:

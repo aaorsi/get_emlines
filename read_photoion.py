@@ -171,9 +171,13 @@ def integ_line(lineinfo,LinesArr,qgas,zgas,nlyc,lname='Halpha',all_lines=False):
   else:
     line = nlyc + alpha + np.log10(cel) - np.log10(frachyda)
 
-  if np.isnan(line):
-    print 'line is nan!'
-    line = -999 
+  if all_lines:
+    if len(np.where(np.isnan(line))[0]) > 0:
+      print 'WARNING: some lines are nan: ',line
+  else:
+    if np.isnan(line):
+      print 'line is nan!'
+      line = -999 
 
 #  if line[0] == line[1]:
   return line
