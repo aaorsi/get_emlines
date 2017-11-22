@@ -21,7 +21,7 @@ def get_lumlines(sfr, metal, LineProps,all_lines=False):
   linename = LineProps['linename']
 
   ngals = len(sfr) if hasattr(sfr,"__len__") else 1
-  qgals = qZrelation(metal, LineProps['q0'],LineProps['g0'])
+  qgals = qZrelation(metal, q0 = LineProps['q0'],g0 = LineProps['g0'])
 
   Nlyc = np.log10(1.35) + np.log10(sfr) + 53.0
 
