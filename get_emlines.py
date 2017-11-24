@@ -1,6 +1,6 @@
 import numpy as np
 import os.path
-from read_photoion import *
+import read_photoion as rp
 import pylab as pl
 import matplotlib.gridspec as gridspec
 from matplotlib.mlab import griddata
@@ -16,7 +16,8 @@ def get_lumlines(sfr, metal, LineProps,all_lines=False):
   LineProps contains Linesinfo, LinesArr, q(z) relation, line name and flux limit
   GalArr is the galaxy data dict.
   """
-  linesinfo, linesarr = read_photoion()
+  Rootdir = os.path.dirname(rp.__file__)
+  linesinfo, linesarr = rp.read_photoion(Rootdir)
 
   linename = LineProps['linename']
 
@@ -28,7 +29,7 @@ def get_lumlines(sfr, metal, LineProps,all_lines=False):
   print 'Computing emission lines for %d galaxies\n' % (ngals)
   lum_line = [] # np.zeros(ngals)
   for i in range(ngals):
-    lum_line.append(integ_line(linesinfo,linesarr,qgals[i],metal[i],
+    lum_line.append(rp.integ_line(linesinfo,linesarr,qgals[i],metal[i],
              Nlyc[i],lname=linename,all_lines=all_lines) if hasattr(qgals,"__len__") else integ_line(
              linesinfo,linesarr,qgals,metal,
              Nlyc,lname=linename,all_lines=all_lines))
@@ -39,12 +40,14 @@ def get_lumlines(sfr, metal, LineProps,all_lines=False):
 
 def get_emlines(linename,sfr,metals,q0=2.8e7,g0=-1.3,all_lines=False):
 
+  if np.isnan(metals).any() or np.isnan(sfr).any():
+    raise ValueError('\nget_emlines(): Input Zgas or sfr contain(s) NaN')
 
   ngal = len(sfr) if hasattr(sfr, "__len__") else 1
 
   LineProps = {'q0':float(q0), 'g0':float(g0),'linename':linename}
   print 'computing line luminosities...'
   ll = get_lumlines(sfr,metals,LineProps,all_lines=all_lines)
-  lumline = np.asarray(ll)
+  lumline = np.array(ll)
 
   return lumline

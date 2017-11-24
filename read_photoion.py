@@ -1,8 +1,9 @@
 import numpy as np
 import sys
+import warnings
 
-def read_photoion(debug=0,MappingsModel='Levesque10'):
-  LineDataDir     = 'HIImodels/Lines/'
+def read_photoion(RootDir, debug=0,MappingsModel='Levesque10'):
+  LineDataDir     = RootDir + '/HIImodels/Lines/'
   LineData_file   = LineDataDir + 'LineData_'+MappingsModel+'dens_1e1'
   LineInfo_file   = LineDataDir + 'LineInfo_'+MappingsModel
   l_info = np.genfromtxt(LineInfo_file,dtype=[('id','i8'),('Linename','S10'),('lambda0','f8')],skip_header=2)
@@ -73,6 +74,8 @@ def calc_emlines(Linesinfo,LinesArr,qgas,zgas,lname='Halpha',all_lines=False):
   i = 0
 
   zgas = ZArray[0] if zgas < ZArray[0] else ZArray[-1] if zgas > ZArray[-1] else zgas
+  
+
 
   if (zgas > 1 or zgas < 1e-4):
     line = 1e-30
@@ -141,8 +144,7 @@ def calc_emlines(Linesinfo,LinesArr,qgas,zgas,lname='Halpha',all_lines=False):
 
     line = t1+t2+t3+t4
     
-    
-  return line
+  return line[0]
 
 
 def integ_line(lineinfo,LinesArr,qgas,zgas,nlyc,lname='Halpha',all_lines=False):
@@ -155,6 +157,7 @@ def integ_line(lineinfo,LinesArr,qgas,zgas,nlyc,lname='Halpha',all_lines=False):
 
   frachyda = calc_emlines(lineinfo,LinesArr,qgas,zgas,'Halpha')
   alpha = np.log10(1.37) - 12
+  
   if all_lines: 
     cel      = calc_emlines(lineinfo,LinesArr,qgas,zgas,all_lines=True)
   else:
@@ -176,7 +179,7 @@ def integ_line(lineinfo,LinesArr,qgas,zgas,nlyc,lname='Halpha',all_lines=False):
       print 'WARNING: some lines are nan: ',line
   else:
     if np.isnan(line):
-      print 'line is nan!'
+      warnings.warn('line is nan!')
       line = -999 
 
 #  if line[0] == line[1]:
