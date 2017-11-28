@@ -38,6 +38,79 @@ def read_photoion(RootDir, debug=0,MappingsModel='Levesque10'):
   return Linesinfo,LinesArr
 
 
+def get_2dfunc(Linesinfo, LinesArr, qgas, zgas,lname = 'Halpha', all_lines=False):
+# Converts Input grid data into a 2d function
+  ZArray = Linesinfo['ZArray']
+  QArray = Linesinfo['QArray']
+
+  nz = Linesinfo['nz']
+  nq = Linesinfo['nq']
+
+    
+  nlines = len(Linesinfo['Linename'])
+
+  if all_lines:
+    idl = range(nlines)
+  else:
+    idl = np.where(Linesinfo['Linename'] == lname)
+    idl = idl[0]
+
+  if len(idl) == 0:
+    raise ValueError('calc_emlines: line name %s not found/recognised\navailable names: %s' % (
+    lname, Linesinfo['Linename']))
+
+  #xx, yy = np.meshgrid(ZArray, QArray)
+  
+  ixx = np.zeros([nz, nq])
+  iyy = np.zeros([nz, nq])
+
+  for iy in range(nq):
+    iyy[:,iy] = np.arange(nz)
+  for ix in range(nz):
+    ixx[ix,:] = np.arange(nq)
+  
+  #import ipdb; ipdb.set_trace()
+  z = np.zeros([nz,nq])
+  for ix in range(nz):
+    for iy in range(nq):
+      idd =  idl + nlines*ixx[ix,iy] + nz*nlines*iyy[ix,iy]
+      z[ix,iy] = LinesArr[idd[0]]
+    
+#    idd =  idl + nlines*ixx + nz*nlines*iyy
+#    z = LinesArr[idd[0]]
+  return ZArray, QArray, z
+
+
+
+
+def calc_emlines2(Linesinfo,LinesArr,qgas,zgas,lname='Halpha',all_lines=False):
+
+  from scipy import interpolate
+  """
+
+  This function computes the emission line luminosity of line lname as a function
+  of ionization parameter, qgas, and metallicity, zgas.
+
+  arguments:
+    qgas: ionisation parameter, [cm/s]
+    zgas: metallicity of the gas
+    lname: String containing the name of the line.
+    all_lines : returns all line fluxes
+
+  unlike calc_emlines(), this one makes use of python interp2d, which might be faster  
+  """
+
+
+  #i = 0
+  #zgas = ZArray[0] if zgas < ZArray[0] else ZArray[-1] if zgas > ZArray[-1] else zgas
+  
+  ZArray, QArray, line = get_2dfunc(Linesinfo, LinesArr, qgas, zgas, lname=lname, all_lines=all_lines)
+  f = interpolate.interp2d(QArray, ZArray, line)
+
+ # import ipdb; ipdb.set_trace()
+
+  return line
+
 def calc_emlines(Linesinfo,LinesArr,qgas,zgas,lname='Halpha',all_lines=False):
 
   """
@@ -159,9 +232,9 @@ def integ_line(lineinfo,LinesArr,qgas,zgas,nlyc,lname='Halpha',all_lines=False):
   alpha = np.log10(1.37) - 12
   
   if all_lines: 
-    cel      = calc_emlines(lineinfo,LinesArr,qgas,zgas,all_lines=True)
+    cel      = calc_emlines2(lineinfo,LinesArr,qgas,zgas,all_lines=True)
   else:
-    cel      = calc_emlines(lineinfo,LinesArr,qgas,zgas,lname=lname)
+    cel      = calc_emlines2(lineinfo,LinesArr,qgas,zgas,lname=lname)
 
   nlines = len(lineinfo['Linename'])
   
