@@ -28,10 +28,12 @@ def get_lumlines(sfr, metal, LineProps,all_lines=False):
 
   print 'Computing emission lines for %d galaxies\n' % (ngals)
   lum_line = [] # np.zeros(ngals)
+  linefunc = rp.get_2dfunc(linesinfo, linesarr, lname=linename, all_lines=all_lines) 
+
   for i in range(ngals):
-    lum_line.append(rp.integ_line(linesinfo,linesarr,qgals[i],metal[i],
+    lum_line.append(rp.integ_line(linefunc,qgals[i],metal[i],
              Nlyc[i],lname=linename,all_lines=all_lines) if hasattr(qgals,"__len__") else integ_line(
-             linesinfo,linesarr,qgals,metal,
+             linefunc,qgals,metal,
              Nlyc,lname=linename,all_lines=all_lines))
 
   return lum_line           

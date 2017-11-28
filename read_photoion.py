@@ -38,8 +38,10 @@ def read_photoion(RootDir, debug=0,MappingsModel='Levesque10'):
   return Linesinfo,LinesArr
 
 
-def get_2dfunc(Linesinfo, LinesArr, qgas, zgas,lname = 'Halpha', all_lines=False):
+def get_2dfunc(Linesinfo, LinesArr, lname = 'Halpha', all_lines=False):
 # Converts Input grid data into a 2d function
+  from scipy import interpolate
+  
   ZArray = Linesinfo['ZArray']
   QArray = Linesinfo['QArray']
 
@@ -70,22 +72,30 @@ def get_2dfunc(Linesinfo, LinesArr, qgas, zgas,lname = 'Halpha', all_lines=False
     ixx[ix,:] = np.arange(nq)
   
   #import ipdb; ipdb.set_trace()
-  z = np.zeros([nz,nq])
-  for ix in range(nz):
-    for iy in range(nq):
-      idd =  idl + nlines*ixx[ix,iy] + nz*nlines*iyy[ix,iy]
-      z[ix,iy] = LinesArr[idd[0]]
+  
+  f = []
+  
+  for _l in range(len(idl)):
+
+    z = np.zeros([nz,nq])
+    for ix in range(nz):
+      for iy in range(nq):
+        idd =  idl[_l] + nlines*ixx[ix,iy] + nz*nlines*iyy[ix,iy]
+        z[ix,iy] = LinesArr[idd[0]]
+        
     
-#    idd =  idl + nlines*ixx + nz*nlines*iyy
-#    z = LinesArr[idd[0]]
-  return ZArray, QArray, z
+    f.append(interpolate.interp2d(QArray, ZArray, z))
+      
+  #    idd =  idl + nlines*ixx + nz*nlines*iyy
+  #    z = LinesArr[idd[0]]
+  
+  return f
 
 
 
 
-def calc_emlines2(Linesinfo,LinesArr,qgas,zgas,lname='Halpha',all_lines=False):
+def calc_emlines2(lfunc,qgas,zgas,lname='Halpha',all_lines=False):
 
-  from scipy import interpolate
   """
 
   This function computes the emission line luminosity of line lname as a function
@@ -104,8 +114,10 @@ def calc_emlines2(Linesinfo,LinesArr,qgas,zgas,lname='Halpha',all_lines=False):
   #i = 0
   #zgas = ZArray[0] if zgas < ZArray[0] else ZArray[-1] if zgas > ZArray[-1] else zgas
   
-  ZArray, QArray, line = get_2dfunc(Linesinfo, LinesArr, qgas, zgas, lname=lname, all_lines=all_lines)
-  f = interpolate.interp2d(QArray, ZArray, line)
+  #lfunc = get_2dfunc(Linesinfo, LinesArr, lname=lname, all_lines=all_lines)
+  line = []
+  for i in range(len(lfunc)):
+    line.append(lfunc[i](qgas, zgas))
 
  # import ipdb; ipdb.set_trace()
 
@@ -220,7 +232,7 @@ def calc_emlines(Linesinfo,LinesArr,qgas,zgas,lname='Halpha',all_lines=False):
   return line[0]
 
 
-def integ_line(lineinfo,LinesArr,qgas,zgas,nlyc,lname='Halpha',all_lines=False):
+def integ_line(qgas,zgas,nlyc,lname='Halpha',all_lines=False):
 
   qmin = 1.0e7
   qmax = 1.0e8
@@ -232,9 +244,9 @@ def integ_line(lineinfo,LinesArr,qgas,zgas,nlyc,lname='Halpha',all_lines=False):
   alpha = np.log10(1.37) - 12
   
   if all_lines: 
-    cel      = calc_emlines2(lineinfo,LinesArr,qgas,zgas,all_lines=True)
+    cel      = calc_emlines2(qgas,zgas,all_lines=True)
   else:
-    cel      = calc_emlines2(lineinfo,LinesArr,qgas,zgas,lname=lname)
+    cel      = calc_emlines2(qgas,zgas,lname=lname)
 
   nlines = len(lineinfo['Linename'])
   
