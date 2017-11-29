@@ -7,7 +7,7 @@ def read_photoion(RootDir, debug=0,MappingsModel='Levesque10'):
   LineData_file   = LineDataDir + 'LineData_'+MappingsModel+'dens_1e1'
   LineInfo_file   = LineDataDir + 'LineInfo_'+MappingsModel
   l_info = np.genfromtxt(LineInfo_file,dtype=[('id','i8'),('Linename','S10'),('lambda0','f8')],skip_header=2)
-  print 'Lines available:',l_info['Linename']
+  #print 'Lines available:',l_info['Linename']
 
   fd = open(LineData_file,'rb')
   nlines = np.fromfile(fd,dtype='i4',count=1)
@@ -22,8 +22,8 @@ def read_photoion(RootDir, debug=0,MappingsModel='Levesque10'):
   nage    = np.fromfile(fd,dtype='i4',count=1)
   
 #  if debug:
-  print 'checking lambda0:',lambda0,l_info['lambda0']
-  print 'nz, nq, nage,',nz,nq,nage
+#  print 'checking lambda0:',lambda0,l_info['lambda0']
+#  print 'nz, nq, nage,',nz,nq,nage
 
   ZArray  = np.fromfile(fd,dtype='f4',count=nz)
   QArray  = np.fromfile(fd,dtype='f4',count=nq)
@@ -35,6 +35,9 @@ def read_photoion(RootDir, debug=0,MappingsModel='Levesque10'):
   'nlines':nlines,'ZArray':ZArray,'QArray':QArray,'AgeArray':AgeArray,
   'nz':nz,'nq':nq,'nage':nage}
 # return l_info,nlines,LinesArr,ZArray,QArray,AgeArray,nz,nq,nage
+#  print 'ZArray limits:', ZArray.min(), ZArray.max()
+#  print 'QArray limits:',QArray.min(), QArray.max()
+
   return Linesinfo,LinesArr
 
 
@@ -119,7 +122,7 @@ def calc_emlines2(lfunc,qgas,zgas,lname='Halpha',all_lines=False):
   for i in range(len(lfunc)):
     line.append(lfunc[i](qgas, zgas))
 
- # import ipdb; ipdb.set_trace()
+  #import ipdb; ipdb.set_trace()
 
   return line
 
@@ -232,23 +235,31 @@ def calc_emlines(Linesinfo,LinesArr,qgas,zgas,lname='Halpha',all_lines=False):
   return line[0]
 
 
-def integ_line(qgas,zgas,nlyc,lname='Halpha',all_lines=False):
+def integ_line(linefunc, qgas,zgas,nlyc,nlines, lname='Halpha',all_lines=False):
 
   qmin = 1.0e7
-  qmax = 1.0e8
+  qmax = 4.0e8
 
+  zmin = 0.001
+  zmax = 0.04
+
+  if zgas < zmin:
+    return np.array([[-30.0]])
+  
   qgas = qmin if qgas < qmin else qmax if qgas > qmax else qgas
+  zgas = zmax if zgas > zmax else zgas
 
 
-  frachyda = calc_emlines(lineinfo,LinesArr,qgas,zgas,'Halpha')
+  #frachyda = calc_emlines(lineinfo,LinesArr,qgas,zgas,'Halpha')
+  frachyda = calc_emlines2(linefunc, qgas,zgas,lname='Halpha')
   alpha = np.log10(1.37) - 12
   
   if all_lines: 
-    cel      = calc_emlines2(qgas,zgas,all_lines=True)
+    cel      = calc_emlines2(linefunc, qgas,zgas,all_lines=True)
   else:
-    cel      = calc_emlines2(qgas,zgas,lname=lname)
+    cel      = calc_emlines2(linefunc, qgas,zgas,lname=lname)
 
-  nlines = len(lineinfo['Linename'])
+  #nlines = len(lineinfo['Linename'])
   
   if frachyda == 1e-30:
     if all_lines == True:
@@ -268,6 +279,7 @@ def integ_line(qgas,zgas,nlyc,lname='Halpha',all_lines=False):
       line = -999 
 
 #  if line[0] == line[1]:
+#  import ipdb ; ipdb.set_trace()
   return line
 
 

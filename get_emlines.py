@@ -6,7 +6,7 @@ import matplotlib.gridspec as gridspec
 from matplotlib.mlab import griddata
 import scipy.stats
 
-def qZrelation(Zgas, q0 = 2.8e7, g0 = -1.3):
+def qZrelation(Zgas, q0,g0):# = 2.8e7, g0 = -1.3):
 # Default parameters from Orsi+14.  
   return q0 * (Zgas/0.012)**g0
 
@@ -22,21 +22,25 @@ def get_lumlines(sfr, metal, LineProps,all_lines=False):
   linename = LineProps['linename']
 
   ngals = len(sfr) if hasattr(sfr,"__len__") else 1
-  qgals = qZrelation(metal, q0 = LineProps['q0'],g0 = LineProps['g0'])
+  qgals = qZrelation(metal, LineProps['q0'],LineProps['g0'])
 
   Nlyc = np.log10(1.35) + np.log10(sfr) + 53.0
 
   print 'Computing emission lines for %d galaxies\n' % (ngals)
   lum_line = [] # np.zeros(ngals)
   linefunc = rp.get_2dfunc(linesinfo, linesarr, lname=linename, all_lines=all_lines) 
+  nlines = len(linesinfo['Linename'])
+
+  print 'Running lines with g0=%f' % LineProps['g0']
+
 
   for i in range(ngals):
     lum_line.append(rp.integ_line(linefunc,qgals[i],metal[i],
-             Nlyc[i],lname=linename,all_lines=all_lines) if hasattr(qgals,"__len__") else integ_line(
-             linefunc,qgals,metal,
-             Nlyc,lname=linename,all_lines=all_lines))
+             Nlyc[i],nlines, lname=linename,all_lines=all_lines) if hasattr(qgals,"__len__") 
+             else rp.integ_line(linefunc,qgals,metal,Nlyc,nlines, lname=linename,
+             all_lines=all_lines))
 
-  return lum_line           
+  return np.array(lum_line)
 
 
 
