@@ -60,7 +60,8 @@ By default, the list of lines available (and their names) are:
 ```
 The central wavelgnth of the last two FIR lines is in um, the rest in Angstroms.
 
-**Modify gamma and q0 from Orsi+14**
+**Modifying gamma and q0 from Orsi+14**
+
 The ionization parameter is assumed to be related to the gas-phase metallicity by a power-law. You can change the slope `g0` or normalization `q0` from their standard values (from Orsi+14) by doing:
 ```python
 loii_disk = lines.get_emlines('xxx',sfrdisk, zdisk, g0 = -1.5,q0 = 3.5e7,all_lines=True)
