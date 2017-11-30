@@ -15,18 +15,24 @@ print lums['OIII_5007']
 
 # All luminosities available should retrieve something like this:
 lums.dtype
-Out[3]: dtype([('Lyalpha', '<f4'), ('Hbeta', '<f4'), ('Halpha', '<f4'), ('OII_3727', '<f4'), ('OII_3729', '<f4'), ('OIII_5007', '<f4'), ('OIII_4959', '<f4'), ('OI_6300', '<f4'), ('NII_6548', '<f4'), ('NII_6584', '<f4'), ('SII_6717', '<f4'), ('SII_6731', '<f4'), ('NeIII_3870', '<f4'), ('CII_158um', '<f4'), ('NII_205um', '<f4')])
+Out[3]: dtype([('Lyalpha', '<f4'), ('Hbeta', '<f4'), ('Halpha', '<f4'), ('OII_3727', '<f4'), ('OII_3729', '<f4'), 
+('OIII_5007', '<f4'), ('OIII_4959', '<f4'), ('OI_6300', '<f4'), ('NII_6548', '<f4'), ('NII_6584', '<f4'), 
+('SII_6717', '<f4'), ('SII_6731', '<f4'), ('NeIII_3870', '<f4'), ('CII_158um', '<f4'), ('NII_205um', '<f4')])
 
 ```
 Note: In its current version, the first argument is obsolete but must be included (hence, `'x'`), and `all_lines` must be set to `True`. This is work in progress, so things will be cleaned up pretty soon.
 
 
-** A quick installation: **
+**A quick installation:**
 
 - First, clone the repository.
 - Add it to your python repositories (e.g. in your bashrc:
+
 `export PYTHONPATH="${PYTHONPATH}:/home/your-python-repositories/get_emlines/"`
+
 - import it as in the example above.
+
+
 
 
 You can access the list of lines available in, e.g.: 
