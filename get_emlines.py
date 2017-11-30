@@ -29,18 +29,32 @@ def get_lumlines(sfr, metal, LineProps,all_lines=False):
   print 'Computing emission lines for %d galaxies\n' % (ngals)
   lum_line = [] # np.zeros(ngals)
   linefunc = rp.get_2dfunc(linesinfo, linesarr, lname=linename, all_lines=all_lines) 
+  hafunc   = rp.get_2dfunc(linesinfo, linesarr, lname='Halpha',all_lines = False)
   nlines = len(linesinfo['Linename'])
 
   print 'Running lines with g0=%f' % LineProps['g0']
 
+#  import pdb ; pdb.set_trace()
+  lum_line = np.zeros([ngals,nlines])
+
+  ltype = []
+  for i in range(nlines):
+    _lt = tuple([linesinfo['Linename'][i],np.float32])
+    ltype.append(_lt)
+  
+  lum_line = np.zeros(ngals,dtype=np.dtype(ltype))
 
   for i in range(ngals):
-    lum_line.append(rp.integ_line(linefunc,qgals[i],metal[i],
+    lum = (rp.integ_line(linefunc,hafunc, qgals[i],metal[i],
              Nlyc[i],nlines, lname=linename,all_lines=all_lines) if hasattr(qgals,"__len__") 
-             else rp.integ_line(linefunc,qgals,metal,Nlyc,nlines, lname=linename,
+             else rp.integ_line(linefunc,hafunc, qgals,metal,Nlyc,nlines, lname=linename,
              all_lines=all_lines))
 
-  return np.array(lum_line)
+    for j in range(nlines):
+      jname = linesinfo['Linename'][j]
+      lum_line[jname][i] = lum[j]
+
+  return lum_line
 
 
 

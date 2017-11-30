@@ -51,18 +51,15 @@ def get_2dfunc(Linesinfo, LinesArr, lname = 'Halpha', all_lines=False):
   nz = Linesinfo['nz']
   nq = Linesinfo['nq']
 
-    
   nlines = len(Linesinfo['Linename'])
 
   if all_lines:
     idl = range(nlines)
   else:
-    idl = np.where(Linesinfo['Linename'] == lname)
-    idl = idl[0]
-
-  if len(idl) == 0:
-    raise ValueError('calc_emlines: line name %s not found/recognised\navailable names: %s' % (
-    lname, Linesinfo['Linename']))
+    idl = np.where(Linesinfo['Linename'] == lname)[0]
+    if len(idl) == 0:
+      raise ValueError('calc_emlines: line name %s not found/recognised\navailable names: %s' % (
+      lname, Linesinfo['Linename']))
 
   #xx, yy = np.meshgrid(ZArray, QArray)
   
@@ -77,27 +74,21 @@ def get_2dfunc(Linesinfo, LinesArr, lname = 'Halpha', all_lines=False):
   #import ipdb; ipdb.set_trace()
   
   f = []
-  
   for _l in range(len(idl)):
-
     z = np.zeros([nz,nq])
     for ix in range(nz):
       for iy in range(nq):
-        idd =  idl[_l] + nlines*ixx[ix,iy] + nz*nlines*iyy[ix,iy]
-        z[ix,iy] = LinesArr[idd[0]]
+        idd =  int(idl[_l] + nlines*ixx[ix,iy] + nz*nlines*iyy[ix,iy])
+        z[ix,iy] = LinesArr[idd]
         
     
     f.append(interpolate.interp2d(QArray, ZArray, z))
-      
-  #    idd =  idl + nlines*ixx + nz*nlines*iyy
-  #    z = LinesArr[idd[0]]
-  
   return f
 
 
 
 
-def calc_emlines2(lfunc,qgas,zgas,lname='Halpha',all_lines=False):
+def calc_emlines2(lfunc,qgas,zgas,all_lines=False):
 
   """
 
@@ -118,10 +109,12 @@ def calc_emlines2(lfunc,qgas,zgas,lname='Halpha',all_lines=False):
   #zgas = ZArray[0] if zgas < ZArray[0] else ZArray[-1] if zgas > ZArray[-1] else zgas
   
   #lfunc = get_2dfunc(Linesinfo, LinesArr, lname=lname, all_lines=all_lines)
-  line = []
-  for i in range(len(lfunc)):
-    line.append(lfunc[i](qgas, zgas))
-
+  if all_lines:
+    line = []
+    for i in range(len(lfunc)):
+      line = np.append(line,lfunc[i](qgas, zgas))
+  else:
+    line = lfunc[0](qgas, zgas)
   #import ipdb; ipdb.set_trace()
 
   return line
@@ -235,7 +228,7 @@ def calc_emlines(Linesinfo,LinesArr,qgas,zgas,lname='Halpha',all_lines=False):
   return line[0]
 
 
-def integ_line(linefunc, qgas,zgas,nlyc,nlines, lname='Halpha',all_lines=False):
+def integ_line(linefunc, hafunc,qgas,zgas,nlyc,nlines, lname='Halpha',all_lines=False):
 
   qmin = 1.0e7
   qmax = 4.0e8
@@ -243,21 +236,22 @@ def integ_line(linefunc, qgas,zgas,nlyc,nlines, lname='Halpha',all_lines=False):
   zmin = 0.001
   zmax = 0.04
 
-  if zgas < zmin:
-    return np.array([[-30.0]])
+#  if zgas < zmin:
+#    return np.array([[-30.0]])
   
   qgas = qmin if qgas < qmin else qmax if qgas > qmax else qgas
   zgas = zmax if zgas > zmax else zgas
 
 
   #frachyda = calc_emlines(lineinfo,LinesArr,qgas,zgas,'Halpha')
-  frachyda = calc_emlines2(linefunc, qgas,zgas,lname='Halpha')
+ 
+  frachyda = calc_emlines2(hafunc, qgas,zgas)
   alpha = np.log10(1.37) - 12
   
   if all_lines: 
     cel      = calc_emlines2(linefunc, qgas,zgas,all_lines=True)
   else:
-    cel      = calc_emlines2(linefunc, qgas,zgas,lname=lname)
+    cel      = calc_emlines2(linefunc, qgas,zgas)
 
   #nlines = len(lineinfo['Linename'])
   
