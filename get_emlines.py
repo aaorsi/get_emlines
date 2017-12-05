@@ -11,7 +11,7 @@ def qZrelation(Zgas, q0,g0):# = 2.8e7, g0 = -1.3):
   return q0 * (Zgas/0.012)**g0
 
 
-def get_lumlines(sfr, metal, LineProps,all_lines=False):
+def get_lumlines(sfr, metal, LineProps, interp_func = 'interp2d', verbose = False):
   """
   LineProps contains Linesinfo, LinesArr, q(z) relation, line name and flux limit
   GalArr is the galaxy data dict.
@@ -26,27 +26,36 @@ def get_lumlines(sfr, metal, LineProps,all_lines=False):
 
   Nlyc = np.log10(1.35) + np.log10(sfr) + 53.0
 
-  print 'Computing emission lines for %d galaxies\n' % (ngals)
+  if verbose:
+    print 'Computing emission lines for %d galaxies\n' % (ngals)
   lum_line = [] # np.zeros(ngals)
-  linefunc = rp.get_2dfunc(linesinfo, linesarr, lname=linename, all_lines=all_lines) 
-  hafunc   = rp.get_2dfunc(linesinfo, linesarr, lname='Halpha',all_lines = False)
-  nlines = len(linesinfo['Linename'])
+  linefunc = rp.get_2dfunc(linesinfo, linesarr, lname=linename, interp_func=interp_func,verbose = verbose) 
+  hafunc   = rp.get_2dfunc(linesinfo, linesarr, lname='Halpha', interp_func=interp_func, verbose = verbose)
+  
+  n_alllines = len(linesinfo['Linename'])
+  nlines = len(linename)
 
-  print 'Running lines with g0=%f' % LineProps['g0']
+  if linename == 'All' or linename = 'all':
+    nlines = n_alllines
+    linename = linesinfo['linename']
+
+
+  if verbose:
+    print 'Running lines with g0=%f' % LineProps['g0']
 
 #  import pdb ; pdb.set_trace()
   lum_line = np.zeros([ngals,nlines])
 
   ltype = []
   for i in range(nlines):
-    _lt = tuple([linesinfo['Linename'][i],np.float32])
+    _lt = tuple([linename[i],np.float32])
     ltype.append(_lt)
   
   lum_line = np.zeros(ngals,dtype=np.dtype(ltype))
 
   for i in range(ngals):
     lum = (rp.integ_line(linefunc,hafunc, qgals[i],metal[i],
-             Nlyc[i],nlines, lname=linename,all_lines=all_lines) if hasattr(qgals,"__len__") 
+             Nlyc[i],nlines, lname=linename) if hasattr(qgals,"__len__") 
              else rp.integ_line(linefunc,hafunc, qgals,metal,Nlyc,nlines, lname=linename,
              all_lines=all_lines))
 
@@ -58,7 +67,10 @@ def get_lumlines(sfr, metal, LineProps,all_lines=False):
 
 
 
-def get_emlines(linename,sfr,metals,q0=2.8e7,g0=-1.3,all_lines=False):
+def get_emlines(sfr,metals,q0=2.8e7,g0=-1.3,linename='All', interp_func ='interp2d',test_interp = False, verbose=False):
+  
+  # interp_func can be 'interp2d' or 'RectBivariateSpline'
+  # test_interp is set to True for making plots that show the goodness of the interpolation within the grid. (TODO) 
 
   if np.isnan(metals).any() or np.isnan(sfr).any():
     raise ValueError('\nget_emlines(): Input Zgas or sfr contain(s) NaN')
@@ -66,8 +78,7 @@ def get_emlines(linename,sfr,metals,q0=2.8e7,g0=-1.3,all_lines=False):
   ngal = len(sfr) if hasattr(sfr, "__len__") else 1
 
   LineProps = {'q0':float(q0), 'g0':float(g0),'linename':linename}
-  print 'computing line luminosities...'
-  ll = get_lumlines(sfr,metals,LineProps,all_lines=all_lines)
+  ll = get_lumlines(sfr,metals,LineProps, interp_func= interp_func, verbose=verbose)
   lumline = np.array(ll)
 
   return lumline
