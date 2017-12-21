@@ -19,7 +19,7 @@ Out[3]: dtype([('Lyalpha', '<f4'), ('Hbeta', '<f4'), ('Halpha', '<f4'), ('OII_37
 ('SII_6717', '<f4'), ('SII_6731', '<f4'), ('NeIII_3870', '<f4'), ('CII_158um', '<f4'), ('NII_205um', '<f4')])
 
 ```
-Note: In its current developing version, the first argument is obsolete but must be included (hence, `'x'`), and `all_lines` must be set to `True`. This is work in progress, so things will be cleaned up pretty soon to allow the user to specify specific line(s) as input.
+*Note: In its current developing version, the first argument is obsolete but must be included (hence, `'x'`), and `all_lines` must be set to `True`. This is work in progress, so things will be cleaned up pretty soon to allow the user to specify specific line(s) as input.*
 
 
 **A quick installation:**
