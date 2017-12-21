@@ -5,7 +5,6 @@ This code computes line luminosities *log(L [erg s-1])* based on an input *SFR [
 **Quick example of usage:**
 ```python
 import get_emlines as lines
-from get_emlines import *
 sfr  = 0.1   # Msun/yr
 Z    = 0.01  # M_metals/M_gas 
 lums = lines.get_emlines('x',sfr,Z,all_lines=True)
@@ -20,15 +19,15 @@ Out[3]: dtype([('Lyalpha', '<f4'), ('Hbeta', '<f4'), ('Halpha', '<f4'), ('OII_37
 ('SII_6717', '<f4'), ('SII_6731', '<f4'), ('NeIII_3870', '<f4'), ('CII_158um', '<f4'), ('NII_205um', '<f4')])
 
 ```
-Note: In its current version, the first argument is obsolete but must be included (hence, `'x'`), and `all_lines` must be set to `True`. This is work in progress, so things will be cleaned up pretty soon.
+Note: In its current developing version, the first argument is obsolete but must be included (hence, `'x'`), and `all_lines` must be set to `True`. This is work in progress, so things will be cleaned up pretty soon to allow the user to specify specific line(s) as input.
 
 
 **A quick installation:**
 
 - First, clone the repository.
-- Add it to your python repositories (e.g. in your bashrc:
+- Add it to your python libraries (e.g. in your bashrc:
 
-`export PYTHONPATH="${PYTHONPATH}:/home/your-python-repositories/get_emlines/"`
+`export PYTHONPATH="${PYTHONPATH}:/home/your-path-to-get_emlines/"`
 
 - import it as in the example above.
 
