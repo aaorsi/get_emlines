@@ -35,7 +35,7 @@ def get_lumlines(sfr, metal, LineProps, interp_func = 'interp2d', verbose = Fals
   n_alllines = len(linesinfo['Linename'])
   nlines = len(linename)
 
-  if linename == 'All' or linename = 'all':
+  if linename == 'All' or linename == 'all':
     nlines = n_alllines
     linename = linesinfo['linename']
 
