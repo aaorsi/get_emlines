@@ -2,6 +2,8 @@
 
 This code computes line luminosities *log(L [erg s-1])* based on an input *SFR [M_sun/yr]* and metallicity *Z*. Details on the physics and the implementation behind this can be found in [Orsi et al. 2014](http://adsabs.harvard.edu/abs/2014MNRAS.443..799O)
 
+**The current version of the code is broken. I'll fix it anytime soon**
+
 **Quick example of usage:**
 ```python
 import get_emlines as lines
