@@ -5,6 +5,7 @@ import pylab as pl
 import matplotlib.gridspec as gridspec
 from matplotlib.mlab import griddata
 import scipy.stats
+import warnings
 
 def qZrelation(Zgas, q0,g0):# = 2.8e7, g0 = -1.3):
 # Default parameters from Orsi+14.  
@@ -17,6 +18,11 @@ def get_lumlines(sfr, metal, LineProps, interp_func = 'interp2d', verbose = Fals
   GalArr is the galaxy data dict.
   """
   Rootdir = os.path.dirname(rp.__file__)
+  
+  if verbose:
+    print 'Rootdir %s' % Rootdir
+  if Rootdir == '':
+    warnings.warn('Rootdir is empty!')
   linesinfo, linesarr = rp.read_photoion(Rootdir)
 
   linename = LineProps['linename']
@@ -29,8 +35,8 @@ def get_lumlines(sfr, metal, LineProps, interp_func = 'interp2d', verbose = Fals
   if verbose:
     print 'Computing emission lines for %d galaxies\n' % (ngals)
   lum_line = [] # np.zeros(ngals)
-  linefunc = rp.get_2dfunc(linesinfo, linesarr, lname=linename, interp_func=interp_func,verbose = verbose) 
-  hafunc   = rp.get_2dfunc(linesinfo, linesarr, lname='Halpha', interp_func=interp_func, verbose = verbose)
+  linefunc = rp.get_2dfunc(linesinfo, linesarr, lname=linename, interp_func=interp_func) 
+  hafunc   = rp.get_2dfunc(linesinfo, linesarr, lname='Halpha', interp_func=interp_func)
   
   n_alllines = len(linesinfo['Linename'])
   nlines = len(linename)
@@ -72,8 +78,8 @@ def get_emlines(sfr,metals,q0=2.8e7,g0=-1.3,linename='All', interp_func ='interp
   # interp_func can be 'interp2d' or 'RectBivariateSpline'
   # test_interp is set to True for making plots that show the goodness of the interpolation within the grid. (TODO) 
 
-  if np.isnan(metals).any() or np.isnan(sfr).any():
-    raise ValueError('\nget_emlines(): Input Zgas or sfr contain(s) NaN')
+  #if np.isnan(metals).any() or np.isnan(sfr).any():
+  #  raise ValueError('\nget_emlines(): Input Zgas or sfr contain(s) NaN')
 
   ngal = len(sfr) if hasattr(sfr, "__len__") else 1
 

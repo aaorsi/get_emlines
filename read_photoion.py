@@ -41,7 +41,7 @@ def read_photoion(RootDir, debug=0,MappingsModel='Levesque10'):
   return Linesinfo,LinesArr
 
 
-def get_2dfunc(Linesinfo, LinesArr, lname = 'Halpha', all_lines=False, interp_func = 'interp2d'):
+def get_2dfunc(Linesinfo, LinesArr, lname = 'Halpha', all_lines=True, interp_func = 'interp2d'):
 # Converts Input grid data into a 2d function
   from scipy import interpolate
   
@@ -89,8 +89,7 @@ def get_2dfunc(Linesinfo, LinesArr, lname = 'Halpha', all_lines=False, interp_fu
       kx, ky = [int(s) for s in interp_func.split() if s.isdigit()]
       f.append(interpolate.RectBivariateSpline(QArray, ZArray, z, kx = kx, ky = ky))
     else:
-      raise ValueError('get_2dfunc(): %s is not a valid interpolation function\n
-      Try "interp2d", "RectBivariateSpline" or "RectBivariateSpline kx <kx> ky <ky>"' 
+      raise ValueError('get_2dfunc(): %s is not a valid interpolation function \nTry "interp2d", "RectBivariateSpline" or "RectBivariateSpline kx <kx> ky <ky>"' 
       % interp_func)
 
   return f
