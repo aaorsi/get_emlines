@@ -68,7 +68,7 @@ The ionization parameter is assumed to be related to the gas-phase metallicity b
 
 . You can change the slope `g0` or normalization `q0` from their standard values (from Orsi+14) by doing:
 ```python
-loii_disk = lines.get_emlines(sfrdisk, zdisk, g0 = -1.5,q0 = 3.5e7)
+lum_disk = lines.get_emlines(sfrdisk, zdisk, g0 = -1.5,q0 = 3.5e7)
 ```
 In the above the slope and normalization changed to `-1.5` and `3.5e7`, respectively.
 
