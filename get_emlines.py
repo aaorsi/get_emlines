@@ -22,7 +22,8 @@ def get_lumlines(sfr, metal, LineProps, interp_func = 'interp2d', verbose = Fals
   if verbose:
     print 'Rootdir %s' % Rootdir
   if Rootdir == '':
-    warnings.warn('Rootdir is empty!')
+    warnings.warn('Rootdir is empty! Perhaps youre in the get_emlines() folder.')
+    Rootdir = os.getcwd()
   linesinfo, linesarr = rp.read_photoion(Rootdir)
 
   linename = LineProps['Linename']
