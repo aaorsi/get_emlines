@@ -61,7 +61,12 @@ The central wavelgnth of the last two FIR lines is in um, the rest in Angstroms.
 
 **Modifying gamma and q0 from Orsi+14**
 
-The ionization parameter is assumed to be related to the gas-phase metallicity by a power-law. You can change the slope `g0` or normalization `q0` from their standard values (from Orsi+14) by doing:
+The ionization parameter is assumed to be related to the gas-phase metallicity by a power-law:
+
+![Alt Text](https://github.com/aaorsi/get_emlines/blob/master/eq_gif.gif)
+
+
+. You can change the slope `g0` or normalization `q0` from their standard values (from Orsi+14) by doing:
 ```python
 loii_disk = lines.get_emlines(sfrdisk, zdisk, g0 = -1.5,q0 = 3.5e7)
 ```
