@@ -118,6 +118,8 @@ def calc_emlines2(lfunc,qgas,zgas,all_lines=False):
   #zgas = ZArray[0] if zgas < ZArray[0] else ZArray[-1] if zgas > ZArray[-1] else zgas
   
   #lfunc = get_2dfunc(Linesinfo, LinesArr, lname=lname, all_lines=all_lines)
+  
+  
   if all_lines:
     line = []
     for i in range(len(lfunc)):
@@ -125,7 +127,7 @@ def calc_emlines2(lfunc,qgas,zgas,all_lines=False):
   else:
     line = lfunc[0](qgas, zgas)
   #import ipdb; ipdb.set_trace()
-
+  
   return line
 
 def calc_emlines(Linesinfo,LinesArr,qgas,zgas,lname='Halpha',all_lines=False):
@@ -237,7 +239,7 @@ def calc_emlines(Linesinfo,LinesArr,qgas,zgas,lname='Halpha',all_lines=False):
   return line[0]
 
 
-def integ_line(linefunc, hafunc,qgas,zgas,nlyc,nlines, lname='Halpha',all_lines=False):
+def integ_line(linefunc, hafunc,qgas,zgas,nlyc,nlines, lname='Halpha',all_lines=True):
 
   qmin = 1.0e7
   qmax = 4.0e8
@@ -252,6 +254,7 @@ def integ_line(linefunc, hafunc,qgas,zgas,nlyc,nlines, lname='Halpha',all_lines=
   zgas = zmax if zgas > zmax else zgas
 
 
+
   #frachyda = calc_emlines(lineinfo,LinesArr,qgas,zgas,'Halpha')
  
   frachyda = calc_emlines2(hafunc, qgas,zgas)
@@ -264,6 +267,8 @@ def integ_line(linefunc, hafunc,qgas,zgas,nlyc,nlines, lname='Halpha',all_lines=
 
   #nlines = len(lineinfo['Linename'])
   
+
+
   if frachyda == 1e-30:
     if all_lines == True:
       line = np.zeros(nlines) + 1e-30

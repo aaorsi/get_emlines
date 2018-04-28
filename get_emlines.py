@@ -25,7 +25,7 @@ def get_lumlines(sfr, metal, LineProps, interp_func = 'interp2d', verbose = Fals
     warnings.warn('Rootdir is empty!')
   linesinfo, linesarr = rp.read_photoion(Rootdir)
 
-  linename = LineProps['linename']
+  linename = LineProps['Linename']
 
   ngals = len(sfr) if hasattr(sfr,"__len__") else 1
   qgals = qZrelation(metal, LineProps['q0'],LineProps['g0'])
@@ -35,15 +35,17 @@ def get_lumlines(sfr, metal, LineProps, interp_func = 'interp2d', verbose = Fals
   if verbose:
     print 'Computing emission lines for %d galaxies\n' % (ngals)
   lum_line = [] # np.zeros(ngals)
+  
   linefunc = rp.get_2dfunc(linesinfo, linesarr, lname=linename, interp_func=interp_func) 
   hafunc   = rp.get_2dfunc(linesinfo, linesarr, lname='Halpha', interp_func=interp_func)
   
   n_alllines = len(linesinfo['Linename'])
   nlines = len(linename)
 
+
   if linename == 'All' or linename == 'all':
     nlines = n_alllines
-    linename = linesinfo['linename']
+    linename = linesinfo['Linename']
 
 
   if verbose:
@@ -62,8 +64,7 @@ def get_lumlines(sfr, metal, LineProps, interp_func = 'interp2d', verbose = Fals
   for i in range(ngals):
     lum = (rp.integ_line(linefunc,hafunc, qgals[i],metal[i],
              Nlyc[i],nlines, lname=linename) if hasattr(qgals,"__len__") 
-             else rp.integ_line(linefunc,hafunc, qgals,metal,Nlyc,nlines, lname=linename,
-             all_lines=all_lines))
+             else rp.integ_line(linefunc,hafunc, qgals,metal,Nlyc,nlines, lname=linename))
 
     for j in range(nlines):
       jname = linesinfo['Linename'][j]
@@ -83,7 +84,7 @@ def get_emlines(sfr,metals,q0=2.8e7,g0=-1.3,linename='All', interp_func ='interp
 
   ngal = len(sfr) if hasattr(sfr, "__len__") else 1
 
-  LineProps = {'q0':float(q0), 'g0':float(g0),'linename':linename}
+  LineProps = {'q0':float(q0), 'g0':float(g0),'Linename':linename}
   ll = get_lumlines(sfr,metals,LineProps, interp_func= interp_func, verbose=verbose)
   lumline = np.array(ll)
 
