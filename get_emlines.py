@@ -5,7 +5,8 @@ import pylab as pl
 import matplotlib.gridspec as gridspec
 from matplotlib.mlab import griddata
 import scipy.stats
-import warnings
+import logging
+
 
 def qZrelation(Zgas, q0,g0):# = 2.8e7, g0 = -1.3):
 # Default parameters from Orsi+14.  
@@ -17,12 +18,13 @@ def get_lumlines(sfr, metal, LineProps, interp_func = 'interp2d', verbose = Fals
   LineProps contains Linesinfo, LinesArr, q(z) relation, line name and flux limit
   GalArr is the galaxy data dict.
   """
+  
+
   Rootdir = os.path.dirname(rp.__file__)
   
-  if verbose:
-    print 'Rootdir %s' % Rootdir
+  logging.debug('Rootdir: %s',Rootdir)
   if Rootdir == '':
-    warnings.warn('Rootdir is empty! Perhaps youre in the get_emlines() folder.')
+    logging.warning('Rootdir appears empty. Using cwd()')
     Rootdir = os.getcwd()
   linesinfo, linesarr = rp.read_photoion(Rootdir)
 
@@ -33,12 +35,11 @@ def get_lumlines(sfr, metal, LineProps, interp_func = 'interp2d', verbose = Fals
 
   Nlyc = np.log10(1.35) + np.log10(sfr) + 53.0
 
-  if verbose:
-    print 'Computing emission lines for %d galaxies\n' % (ngals)
+  logging.info('Computing emission lines for %d galaxies',ngals)
   lum_line = [] # np.zeros(ngals)
   
   linefunc = rp.get_2dfunc(linesinfo, linesarr, lname=linename, interp_func=interp_func) 
-  hafunc   = rp.get_2dfunc(linesinfo, linesarr, lname='Halpha', interp_func=interp_func)
+  hafunc   = rp.get_2dfunc(linesinfo, linesarr, lname='Halpha', interp_func=interp_func,all_lines=False)
   
   n_alllines = len(linesinfo['Linename'])
   nlines = len(linename)
@@ -49,8 +50,7 @@ def get_lumlines(sfr, metal, LineProps, interp_func = 'interp2d', verbose = Fals
     linename = linesinfo['Linename']
 
 
-  if verbose:
-    print 'Running lines with g0=%f' % LineProps['g0']
+  logging.debug('Running lines with g0=%f', LineProps['g0'])
 
 #  import pdb ; pdb.set_trace()
   lum_line = np.zeros([ngals,nlines])
@@ -82,11 +82,25 @@ def get_emlines(sfr,metals,q0=2.8e7,g0=-1.3,linename='All', interp_func ='interp
 
   #if np.isnan(metals).any() or np.isnan(sfr).any():
   #  raise ValueError('\nget_emlines(): Input Zgas or sfr contain(s) NaN')
+ 
+  # Reseting the logging so multiple calls to the function can 
+  # handle different verbose choices
+  root = logging.getLogger()
+  map(root.removeHandler, root.handlers[:])
+  map(root.removeFilter, root.filters[:])
+
+  lev = logging.DEBUG if verbose else logging.INFO
+  logging.basicConfig(level=lev,format=' %(levelname)s - %(funcName)s(): %(message)s')
+
+  logging.debug('verbose output activated')
 
   ngal = len(sfr) if hasattr(sfr, "__len__") else 1
 
   LineProps = {'q0':float(q0), 'g0':float(g0),'Linename':linename}
   ll = get_lumlines(sfr,metals,LineProps, interp_func= interp_func, verbose=verbose)
   lumline = np.array(ll)
+  
+  logging.info('Luminosities computed OK')
+
 
   return lumline

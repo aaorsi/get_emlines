@@ -1,6 +1,7 @@
 import numpy as np
 import sys
 import warnings
+import logging
 
 def read_photoion(RootDir, debug=0,MappingsModel='Levesque10'):
   LineDataDir     = RootDir + '/HIImodels/Lines/'
@@ -13,8 +14,8 @@ def read_photoion(RootDir, debug=0,MappingsModel='Levesque10'):
   nlines = np.fromfile(fd,dtype='i4',count=1)
 
   if (nlines != len(l_info['id'])):
-    print 'Warning read_photoion.py: check number of lines read'
-    print 'nlines=',nlines,' len(l_info):',len(l_info['id'])
+    logging.warning('Warning read_photoion.py: check number of lines read')
+    logging.warning('nlines=%d\n len(l_info):%d',nlines,len(l_info['id']))
   
   lambda0 = np.fromfile(fd,dtype='f4',count=nlines)
   nz      = np.fromfile(fd,dtype='i4',count=1)
@@ -54,8 +55,10 @@ def get_2dfunc(Linesinfo, LinesArr, lname = 'Halpha', all_lines=True, interp_fun
   nlines = len(Linesinfo['Linename'])
 
   if all_lines:
+    logging.debug('Constructing grid function for all lines')
     idl = range(nlines)
   else:
+    logging.debug('Constructing grid function for %s', lname)
     idl = np.where(Linesinfo['Linename'] == lname)[0]
     if len(idl) == 0:
       raise ValueError('calc_emlines: line name %s not found/recognised\navailable names: %s' % (
@@ -92,6 +95,7 @@ def get_2dfunc(Linesinfo, LinesArr, lname = 'Halpha', all_lines=True, interp_fun
       raise ValueError('get_2dfunc(): %s is not a valid interpolation function \nTry "interp2d", "RectBivariateSpline" or "RectBivariateSpline kx <kx> ky <ky>"' 
       % interp_func)
 
+  logging.debug('Done constructing 2D grid function')
   return f
 
 
@@ -159,8 +163,8 @@ def calc_emlines(Linesinfo,LinesArr,qgas,zgas,lname='Halpha',all_lines=False):
     idl = idl[0]
 
   if len(idl) == 0:
-    print 'calc_emlines: line name ',lname,' not found/recognised'
-    print 'possible linenames are: ',Linesinfo['Linename']
+    logging.warning('calc_emlines: line name %s not found or recognised',lname)
+    logging.info('possible linenames are: %s',Linesinfo['Linename'])
     sys.exit()
 
   i = 0
@@ -280,10 +284,10 @@ def integ_line(linefunc, hafunc,qgas,zgas,nlyc,nlines, lname='Halpha',all_lines=
 
   if all_lines:
     if len(np.where(np.isnan(line))[0]) > 0:
-      print 'WARNING: some lines are nan: ',line
+      logging.warning('some lines are nan: %d ',line)
   else:
     if np.isnan(line):
-      warnings.warn('line is nan!')
+      logging.warning('line is nan!')
       line = -999 
 
 #  if line[0] == line[1]:
