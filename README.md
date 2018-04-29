@@ -19,6 +19,29 @@ Out[3]: dtype([('Lyalpha', '<f4'), ('Hbeta', '<f4'), ('Halpha', '<f4'), ('OII_37
 ('OIII_5007', '<f4'), ('OIII_4959', '<f4'), ('OI_6300', '<f4'), ('NII_6548', '<f4'), ('NII_6584', '<f4'), 
 ('SII_6717', '<f4'), ('SII_6731', '<f4'), ('NeIII_3870', '<f4'), ('CII_158um', '<f4'), ('NII_205um', '<f4')])
 
+# Another example with an array of dummy galaxies:
+sfr = np.logspace(-2,2,1e3) ; z = np.linspace(1e-3,1e-1,1e3)
+# Testing the verbose keyword as well
+lums = lines.get_emlines(sfr,z,verbose=True)
+
+# The messages printed should look something like this:
+
+ DEBUG - get_emlines(): verbose output activated
+ DEBUG - get_lumlines(): Rootdir:
+ WARNING - get_lumlines(): Rootdir appears empty. Using cwd()
+ INFO - get_lumlines(): Computing emission lines for 1000 galaxies
+ DEBUG - get_2dfunc(): Constructing grid function for all lines
+ DEBUG - get_2dfunc(): Done constructing 2D grid function
+ DEBUG - get_2dfunc(): Constructing grid function for Halpha
+ DEBUG - get_2dfunc(): Done constructing 2D grid function
+ DEBUG - get_lumlines(): Running lines with g0=-1.300000
+ INFO - get_emlines(): Luminosities computed OK
+
+# The WARNING occurs because the code was executed from the folder containing get_emlines(). This is harmless.
+
+print lums['Halpha'].min(), lums['Hbeta'].max()
+39.2671 42.8018
+
 ```
 
 
