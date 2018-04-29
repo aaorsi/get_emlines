@@ -20,14 +20,15 @@ Out[3]: dtype([('Lyalpha', '<f4'), ('Hbeta', '<f4'), ('Halpha', '<f4'), ('OII_37
 ('SII_6717', '<f4'), ('SII_6731', '<f4'), ('NeIII_3870', '<f4'), ('CII_158um', '<f4'), ('NII_205um', '<f4')])
 
 # Another example with an array of dummy galaxies:
+import numpy as np
 sfr = np.logspace(-2,2,1e3) ; z = np.linspace(1e-3,1e-1,1e3)
 # Testing the verbose keyword as well
 lums = lines.get_emlines(sfr,z,verbose=True)
 
-# The messages printed should look something like this:
 ```
 
 ```
+# The messages printed in the above example (verbose activated) should look something like this:
  DEBUG - get_emlines(): verbose output activated
  DEBUG - get_lumlines(): Rootdir:
  WARNING - get_lumlines(): Rootdir appears empty. Using cwd()
@@ -39,11 +40,13 @@ lums = lines.get_emlines(sfr,z,verbose=True)
  DEBUG - get_lumlines(): Running lines with g0=-1.300000
  INFO - get_emlines(): Luminosities computed OK
 
-# The WARNING occurs because the code was executed from the folder containing get_emlines(). This is harmless.
+# The WARNING occurs because the code was executed from the folder containing get_emlines(). 
+# This is harmless.
 
 ```
 
 ```python
+# some output luminosities:
 print lums['Halpha'].min(), lums['Hbeta'].max()
 39.2671 42.8018
 ```
