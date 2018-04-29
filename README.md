@@ -25,7 +25,9 @@ sfr = np.logspace(-2,2,1e3) ; z = np.linspace(1e-3,1e-1,1e3)
 lums = lines.get_emlines(sfr,z,verbose=True)
 
 # The messages printed should look something like this:
+```
 
+```
  DEBUG - get_emlines(): verbose output activated
  DEBUG - get_lumlines(): Rootdir:
  WARNING - get_lumlines(): Rootdir appears empty. Using cwd()
@@ -39,9 +41,11 @@ lums = lines.get_emlines(sfr,z,verbose=True)
 
 # The WARNING occurs because the code was executed from the folder containing get_emlines(). This is harmless.
 
+```
+
+```python
 print lums['Halpha'].min(), lums['Hbeta'].max()
 39.2671 42.8018
-
 ```
 
 
