@@ -1,9 +1,7 @@
 import numpy as np
 import os.path
 import read_photoion as rp
-import pylab as pl
 import matplotlib.gridspec as gridspec
-from matplotlib.mlab import griddata
 import scipy.stats
 import logging
 

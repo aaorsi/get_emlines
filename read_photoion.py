@@ -49,8 +49,8 @@ def get_2dfunc(Linesinfo, LinesArr, lname = 'Halpha', all_lines=True, interp_fun
   ZArray = Linesinfo['ZArray']
   QArray = Linesinfo['QArray']
 
-  nz = Linesinfo['nz']
-  nq = Linesinfo['nq']
+  nz = Linesinfo['nz'][0]
+  nq = Linesinfo['nq'][0]
 
   nlines = len(Linesinfo['Linename'])
 
