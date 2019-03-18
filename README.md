@@ -1,5 +1,12 @@
 # get_emlines
 
+## Table of contents
+* [Description](#description)
+* [Getting starterd](#started)
+* [Running](#running)
+
+**Description**
+
 This code performs an optimal bilinear interpolation on a multi-dimensional grid of photo-ionization models to retrieve  multiple emission lines for objects with a given input set of properties. The code is written in `Python` and the results have been published in [Orsi et al. 2014] 
 
 http://adsabs.harvard.edu/abs/2014MNRAS.443..799O
