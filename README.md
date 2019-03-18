@@ -2,8 +2,10 @@
 
 ## Table of contents
 * [Description](#description)
-* [Getting starterd](#started)
-* [Running](#running)
+* [Getting starterd](#getting-started)
+* [Running example](#running-example)
+* [Model description](#model-descrption)
+* [Varying parameters](#varying-parameters)
 
 **Description**
 
@@ -11,17 +13,20 @@ This code performs an optimal bilinear interpolation on a multi-dimensional grid
 
 http://adsabs.harvard.edu/abs/2014MNRAS.443..799O
 
-**Model description**
+**Getting started**
 
-This code computes galaxy line luminosities *log(L [erg s-1])* based on an input *SFR [M_sun/yr]* and metallicity *Z*. To assign emission lines to galaxies, first we assign an ionization parameter *q*, which is assumed to be related to the gas-phase metallicity by a power-law:
+This code is pretty straightforward to install and use. After cloning the repository, add it to your python path (e.g. `export PYTHONPATH="${PYTHONPATH}:/home/your-path-to-get_emlines/"`) and use it as in the example below.
 
-![Alt Text](https://github.com/aaorsi/get_emlines/blob/master/eq_gif.gif)
+***Dependencies***
 
-Then the code makes use of the grid of photo-ionization models of Levesque et al. 2010 (https://www.emlevesque.com/model-grids/) to perform a bilinear interpolation over *q* and *Z*, leaving the electron density fixed. Finally, to scale line fluxes to galaxy-wide luminosities, the code uses the input *SFR* to infer the *H-alpha* luminosity, and then use its predicted flux to infer all other line luminosities.
+Make sure you have the following packages installed:
+- numpy
+- matplotlib
+- scipy
 
+The grid dataset is included in this repository.
 
-
-**Quick example of usage:**
+**Running example**
 ```python
 import get_emlines as lines
 sfr  = 0.1   # Msun/yr
@@ -69,19 +74,6 @@ print lums['Halpha'].min(), lums['Hbeta'].max()
 39.2671 42.8018
 ```
 
-
-**A quick installation:**
-
-- First, clone the repository.
-- Add it to your python libraries (e.g. in your bashrc:
-
-`export PYTHONPATH="${PYTHONPATH}:/home/your-path-to-get_emlines/"`
-
-- import it as in the example above.
-
-
-
-
 You can access the list of lines available in, e.g.: 
 `HIImodels/Lines/LineInfo_Levesque10`
 By default, the list of lines available (and their names) are:
@@ -107,7 +99,17 @@ By default, the list of lines available (and their names) are:
 ```
 The central wavelgnth of the last two FIR lines is in um, the rest in Angstroms.
 
-**Modifying gamma and q0 from Orsi+14**
+
+**Model description**
+
+This code computes galaxy line luminosities *log(L [erg s-1])* based on an input *SFR [M_sun/yr]* and metallicity *Z*. To assign emission lines to galaxies, first we assign an ionization parameter *q*, which is assumed to be related to the gas-phase metallicity by a power-law:
+
+![Alt Text](https://github.com/aaorsi/get_emlines/blob/master/eq_gif.gif)
+
+Then the code makes use of the grid of photo-ionization models of Levesque et al. 2010 (https://www.emlevesque.com/model-grids/) to perform a bilinear interpolation over *q* and *Z*, leaving the electron density fixed. Finally, to scale line fluxes to galaxy-wide luminosities, the code uses the input *SFR* to infer the *H-alpha* luminosity, and then use its predicted flux to infer all other line luminosities.
+
+
+**Varying parameters**
 
 
 . You can change the slope `g0` or normalization `q0` from their standard values (from Orsi+14) by doing:
