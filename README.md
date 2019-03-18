@@ -7,17 +7,17 @@
 * [Model description](#model-descrption)
 * [Varying parameters](#varying-parameters)
 
-**Description**
+## Description
 
 This code performs an optimal bilinear interpolation on a multi-dimensional grid of photo-ionization models to retrieve  multiple emission lines for objects with a given input set of properties. The code is written in `Python` and the results have been published in [Orsi et al. 2014] 
 
 http://adsabs.harvard.edu/abs/2014MNRAS.443..799O
 
-**Getting started**
+## Getting started
 
 This code is pretty straightforward to install and use. After cloning the repository, add it to your python path (e.g. `export PYTHONPATH="${PYTHONPATH}:/home/your-path-to-get_emlines/"`) and use it as in the example below.
 
-***Dependencies***
+### Dependencies
 
 Make sure you have the following packages installed:
 - numpy
@@ -26,7 +26,7 @@ Make sure you have the following packages installed:
 
 The grid dataset is included in this repository.
 
-**Running example**
+## Running example
 ```python
 import get_emlines as lines
 sfr  = 0.1   # Msun/yr
@@ -100,7 +100,7 @@ By default, the list of lines available (and their names) are:
 The central wavelgnth of the last two FIR lines is in um, the rest in Angstroms.
 
 
-**Model description**
+## Model description
 
 This code computes galaxy line luminosities *log(L [erg s-1])* based on an input *SFR [M_sun/yr]* and metallicity *Z*. To assign emission lines to galaxies, first we assign an ionization parameter *q*, which is assumed to be related to the gas-phase metallicity by a power-law:
 
@@ -109,7 +109,7 @@ This code computes galaxy line luminosities *log(L [erg s-1])* based on an input
 Then the code makes use of the grid of photo-ionization models of Levesque et al. 2010 (https://www.emlevesque.com/model-grids/) to perform a bilinear interpolation over *q* and *Z*, leaving the electron density fixed. Finally, to scale line fluxes to galaxy-wide luminosities, the code uses the input *SFR* to infer the *H-alpha* luminosity, and then use its predicted flux to infer all other line luminosities.
 
 
-**Varying parameters**
+## Varying parameters
 
 
 . You can change the slope `g0` or normalization `q0` from their standard values (from Orsi+14) by doing:
