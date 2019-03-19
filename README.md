@@ -9,7 +9,7 @@
 
 ## Description
 
-This simple code performs an optimal bilinear interpolation on a multi-dimensional grid of photo-ionization models to retrieve  multiple emission lines for objects with a given input set of properties. The code is written in `Python` and it was conceived to generalise the results that were published in [Orsi et al. 2014] so that users can incorporate this model easily.
+This code implements a model to predict nebular emission in galaxies. The code performs an optimal bilinear interpolation on a multi-dimensional grid of photo-ionization models to retrieve  multiple emission lines for objects with a given input set of properties. The code is written in `Python` and it was conceived to generalise the results that were published in [Orsi et al. 2014] so that users can incorporate this model easily. This publication shows some of the scientific applications of the model:
 
 http://adsabs.harvard.edu/abs/2014MNRAS.443..799O
 
@@ -49,12 +49,11 @@ sfr = np.logspace(-2,2,1e3) ; z = np.linspace(1e-3,1e-1,1e3)
 lums = lines.get_emlines(sfr,z,verbose=True)
 
 ```
-
+The messages printed in the above example (verbose activated) should look something like this:
 ```
-# The messages printed in the above example (verbose activated) should look something like this:
+
  DEBUG - get_emlines(): verbose output activated
  DEBUG - get_lumlines(): Rootdir:
- WARNING - get_lumlines(): Rootdir appears empty. Using cwd()
  INFO - get_lumlines(): Computing emission lines for 1000 galaxies
  DEBUG - get_2dfunc(): Constructing grid function for all lines
  DEBUG - get_2dfunc(): Done constructing 2D grid function
@@ -62,9 +61,6 @@ lums = lines.get_emlines(sfr,z,verbose=True)
  DEBUG - get_2dfunc(): Done constructing 2D grid function
  DEBUG - get_lumlines(): Running lines with g0=-1.300000
  INFO - get_emlines(): Luminosities computed OK
-
-# The WARNING occurs because the code was executed from the folder containing get_emlines(). 
-# This is harmless.
 
 ```
 
