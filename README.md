@@ -101,7 +101,7 @@ This code computes galaxy line luminosities *log(L [erg s-1])* based on an input
 
 ![Alt Text](https://github.com/aaorsi/get_emlines/blob/master/eq_gif.gif)
 
-Then the code makes use of the grid of photo-ionization models of Levesque et al. 2010 (https://www.emlevesque.com/model-grids/) to perform a bilinear interpolation over *q* and *Z*, leaving the electron density fixed. Finally, to scale line fluxes to galaxy-wide luminosities, the code uses the input *SFR* to infer the *H-alpha* luminosity, and then use its predicted flux to infer all other line luminosities.
+Then the code makes use of the grid of photo-ionization models of [Levesque et al. 2010](https://www.emlevesque.com/model-grids/) to perform a bilinear interpolation over *q* and *Z*, leaving the electron density fixed. Finally, to scale line fluxes to galaxy-wide luminosities, the code uses the input *SFR* to infer the *H-alpha* luminosity, and then use its predicted flux to infer all other line luminosities.
 
 
 ## Varying parameters
